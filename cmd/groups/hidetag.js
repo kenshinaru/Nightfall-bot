@@ -4,10 +4,10 @@ export default {
    tags: 'group',
    admin: true,
    group: true,
-   run: async (m, { sock, command, args }) => {
+   run: async (m, { sock, command, text }) => {
       if (command === 'hidetag' || command === 'h') {
          let users = m.metadata.participants.map(u => u.id);
-         return sock.reply(m.chat, args, m, { mentions: users });
+         return sock.reply(m.chat, text, m, { mentions: users });
       }
       if (command === 'totag') {
          let users = m.metadata.participants.map(u => u.id && u.id !== sock.user.id);
