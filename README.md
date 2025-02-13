@@ -38,7 +38,7 @@ export default {
   name: ["hello"],
   command: ["hello"],
   run: async(m, { sock, text }) {
-    return "Halo, apa kabar?";
+    return m.reply("Halo, apa kabar?")
   }
 }
 ```
