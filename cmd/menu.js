@@ -39,7 +39,7 @@ export default {
 ⎯⎯⎯ \`INFO BOT\` ⎯⎯⎯
 ⦿ *Nama*      : ${pkg.name}
 ⦿ *Versi*        : ${pkg.version}
-⦿ *Source*    : https://github.com/kenshinaru/autoread
+⦿ *Source*    : https://github.com/kenshinaru/Nightfall-bot
 
 ` + Object.keys(categories).sort().map(category => 
          ` ✦ \`${category.toUpperCase()}\`\n` +
