@@ -2,8 +2,8 @@
 ### Instalasi
 
 ```js
-$ git clone https://github.com/kenshinaru/repo.git
-$ cd repo
+$ git clone https://github.com/kenshinaru/Nightfall-bot.git
+$ cd Nightfall-bot
 $ npm install
 
 // Buka file `setting.js` dan edit pengaturan berikut:  
