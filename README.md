@@ -68,6 +68,6 @@ case 'hi': {
 [![WhatsApp channel](https://img.shields.io/badge/WhatsApp%20Channel-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029VaXH9kE0G0XZqZFYKo0K)
 
 ### Donate
-* <a href="https://saweria.co/donate/kenshinn"><img alt="Saweria" src="https://img.shields.io/badge/Saweria-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
+<a href="https://saweria.co/donate/kenshinn"><img alt="Saweria" src="https://img.shields.io/badge/Saweria-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
 
 Made with ❤️ by Luthfi Joestars
