@@ -40,6 +40,7 @@ $ npm start
 export default {
   name: ["hello"],
   command: ["hello"],
+  tags: 'main',
   run: async(m, { sock, text }) => {
     return m.reply("Halo, apa kabar?")
   }
