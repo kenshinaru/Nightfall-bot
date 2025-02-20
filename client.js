@@ -95,9 +95,6 @@ const Starting = async() => {
     const reason = new Boom(lastDisconnect?.error)?.output.statusCode;
     if (reason === DisconnectReason.badSession) {
       console.log(chalk.red.bold("File sesi buruk, Harap hapus sesi dan scan ulang"));
-      sock.logout();
-      fs.rmSync("./session", { recursive: true, force: true });
-      exec("process.exit(1)", (err) => err && treeKill(process.pid));
     } else if (reason === DisconnectReason.connectionClosed) {
       console.log(chalk.yellow.bold("Koneksi ditutup, mencoba untuk terhubung kembali..."));
     } else if (reason === DisconnectReason.connectionLost) {
