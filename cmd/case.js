@@ -33,23 +33,9 @@ export default {
                 break
                 case 'rvo':
                 case "readviewonce": {
-                    if (!m.quoted) return m.reply("Balas media dengan satu kali lihat");
-                    let type = Object.keys(m.quoted.message || {})[0];
-                    if (!type || !m.quoted.message[type].viewOnce)
-                        return sock.sendMessage(m.chat, {
-                            text: `🚩 Pesan bukan view once.`
-                        }, {
-                            quoted: m
-                        });
-                    let media = await m.quoted.download();
-                    let fileType = /video/.test(type) ? 'video' : 'image';
-                    let fileName = fileType === 'video' ? 'media.mp4' : 'media.jpg';
-                    return await sock.sendMessage(m.chat, {
-                        [fileType]: media,
-                        caption: m.quoted.message[type].caption || ''
-                    }, {
-                        quoted: m
-                    });
+                    if (!q.viewOnce) return m.reply("Balas media dengan satu kali lihat");
+                    q.msg.viewOnce = false
+                    await m.reply({ forward: q, force: true })
                 }
                 break
                 case 'rmbg':
