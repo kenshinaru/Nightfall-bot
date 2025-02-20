@@ -6,15 +6,7 @@ import { fileTypeFromBuffer } from 'file-type'
 export function WAConnection(...args) {
 	let sock = makeWASocket(...args);
 
-   sock.getContentType = (object) => {
-		if (object) {
-			const keys = Object.keys(object);
-			const key = keys.find(x => (x === 'conversation' || x.endsWith('Message') || x.includes('V2') || x.includes('V3')) && x !== 'senderKeyDistributionMessage');
-			return key ? key : keys[0];
-		}
-	}
-	
-    sock.replyButton = async (d, F = [], U, b = {}, i = {}) => {
+   sock.replyButton = async (d, F = [], U, b = {}, i = {}) => {
   let e = [];
   for (const Y of F) {
     if (Y?.name) {
