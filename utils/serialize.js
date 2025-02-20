@@ -96,9 +96,9 @@ export async function msg(sock, m, store) {
 
 	m.reply = async (text, options = {}) => {
             if (typeof text === "string") {
-                return await sock.sendMessage(m.from, { text, ...options }, { quoted: m, ephemeralExpiration: m.expiration, ...options });
+                return await sock.sendMessage(m.chat, { text, ...options }, { quoted: m, ephemeralExpiration: m.expiration, ...options });
             } else if (typeof text === "object" && typeof text !== "string") {
-                return sock.sendMessage(m.from, { ...text, ...options }, { quoted: m, ephemeralExpiration: m.expiration, ...options });
+                return sock.sendMessage(m.chat, { ...text, ...options }, { quoted: m, ephemeralExpiration: m.expiration, ...options });
             }
         }
 	
