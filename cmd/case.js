@@ -1,3 +1,6 @@
+//Untuk menentukan tags case didalam menu, gunakan // tags: namatags
+//Contoh case-case dibawah yang sudah ditentukan tags nya.
+
 export default {
     run: async (m, {
         sock,
@@ -12,7 +15,8 @@ export default {
     }) => {
         try {
             switch (command) {
-                case 'tourl': {
+                case 'tourl': // tags: convert
+                    {
                     let mime = (q.msg || q).mimetype || '';
                     if (/image\/(png|jpe?g|webp)|video\/mp4|audio\/(mpeg|opus)/.test(mime)) {
                         m.react('🕒')
@@ -24,21 +28,21 @@ export default {
                     }
                 }
                 break
-                case 'runtime':
+                case 'runtime': // tags: miscs
                 case "run": {
                     let _uptime = process.uptime() * 1000
                     let uptime = func.toTime(_uptime)
                     sock.reply(m.chat, func.texted('bold', `Running for : [ ${uptime} ]`), m)
                 }
                 break
-                case 'rvo':
+                case 'rvo': // tags: group
                 case "readviewonce": {
                     if (!q.viewOnce) return m.reply("Balas media dengan satu kali lihat");
                     q.msg.viewOnce = false
                     await m.reply({ forward: q, force: true })
                 }
                 break
-                case 'rmbg':
+                case 'rmbg': // tags: tools
                 case "removebg": {
                     if (!q) return m.reply("Kirim atau reply media")
                     let mime = (q.msg || q).mimetype || ''
