@@ -16,20 +16,15 @@ export default {
          const cmds = Array.isArray(menu.name) ? menu.name : [menu.name];
          categories[menu.tags] = categories[menu.tags] || new Set();
          cmds.forEach(cmd => categories[menu.tags].add(cmd));
-         totalCommands += cmds.length;
-      });
+         totalCommands += cmds.length
+      })
 
       const caseFile = fs.readFileSync('./cmd/case.js', 'utf-8');
-      const caseCommands = [...caseFile.matchAll(/case\s+'([^']+)'/g)].map(match => match[1]);
-
-      if (caseCommands.length) {
-         categories['other'] = categories['other'] || new Set();
-         caseCommands.forEach(cmd => categories['other'].add(cmd));
-         totalCommands += caseCommands.length;
-      }
-
-      const time = new Date().toLocaleString('id-ID', { timeZone: 'Asia/Jakarta' });
-      const uptime = func.toTime(process.uptime() * 1000);
+      [...caseFile.matchAll(/case\s+'([^']+)':\s*\/\/\s*tags:\s*(\S+)/g)].forEach(([_, cmd, tag]) => {
+         categories[tag] = categories[tag] || new Set();
+         categories[tag].add(cmd);
+         totalCommands++
+      })
 
       const message = `⎯⎯⎯ \`INFO USER\` ⎯⎯⎯
 ⦿ *Nama*    : ${m.pushName}
@@ -49,7 +44,7 @@ export default {
       ).join('\n\n') +
       '\n\n> Lightweight Whatsapp Bot';
 
-      return sock.sendMessage(m.chat, {
+      return m.reply({
          text: message.trim(),
          contextInfo: {
             mentionedJid: sock.parseMentions(message),
@@ -63,7 +58,7 @@ export default {
                renderLargerThumbnail: true,
             },
          },
-      }, { quoted: m });
+      })
    },
    location: __filename
 };
