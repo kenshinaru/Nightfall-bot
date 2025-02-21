@@ -58,7 +58,38 @@ export default {
                         return await sock.sendFile(m.chat, json, '', '', m)
                     }
                 }
-                break
+               case 'jadianime': // tags: ai
+               case 'toanime': {
+                    let mime = (q.msg || q).mimetype || '';
+                    if (/image/g.test(mime) && !/webp/g.tes>
+                        m.react('🕒')
+                        try {
+                            let img = await q.download();
+                            let out = await scrap.uploadFil>
+                            let old = new Date();
+
+                            const animeApiUrl = `https://in>
+                            const response = await fetch(an>
+                            if (!response.ok) throw new Err>
+
+                            const imageBuffer = await respo>
+
+                            await sock.sendMessage(m.chat, {
+                                image: Buffer.from(imageBuf>
+                                caption: `🍟 *Fetching* : $>
+                            }, {
+                                quoted: m
+                            });
+
+                        } catch (e) {
+                            console.log(e);
+                            return sock.reply(m.chat, `[ ! >
+                        }
+                    } else {
+                        return sock.reply(m.chat, `🚩 Kirim>
+                    }
+                }
+              break
             }
         } catch (e) {
             return sock.reply(m.chat, func.format(e), m);
