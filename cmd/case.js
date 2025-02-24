@@ -61,32 +61,30 @@ export default {
                case 'jadianime': // tags: ai
                case 'toanime': {
                     let mime = (q.msg || q).mimetype || '';
-                    if (/image/g.test(mime) && !/webp/g.tes>
+                    if (/image/g.test(mime) && !/webp/g.test(mime)) {
                         m.react('🕒')
                         try {
                             let img = await q.download();
-                            let out = await scrap.uploadFil>
+                            let out = await scrap.uploadFile(img);
                             let old = new Date();
 
-                            const animeApiUrl = `https://in>
-                            const response = await fetch(an>
-                            if (!response.ok) throw new Err>
+                            const animeApiUrl = `https://indragpt.my.id/command/ai/toanime?url=${out}`;
+                            const response = await fetch(animeApiUrl);
+                            if (!response.ok) throw new Error("Failed to fetch image from API");
 
-                            const imageBuffer = await respo>
+                            const imageBuffer = await response.arrayBuffer();
 
                             await sock.sendMessage(m.chat, {
-                                image: Buffer.from(imageBuf>
-                                caption: `🍟 *Fetching* : $>
-                            }, {
-                                quoted: m
-                            });
+                                image: Buffer.from(imageBuffer),
+                                caption: `🍟 *Fetching* : ${((new Date - old) * 1)} ms`
+                            }, { quoted: m });
 
                         } catch (e) {
                             console.log(e);
-                            return sock.reply(m.chat, `[ ! >
+                            return sock.reply(m.chat, `[ ! ] Konversi gambar gagal.`, m);
                         }
                     } else {
-                        return sock.reply(m.chat, `🚩 Kirim>
+                        return sock.reply(m.chat, `🚩 Kirim gambar dengan caption *${prefix + command}* atau tag gambar yang sudah dikirim.`, m);
                     }
                 }
               break
