@@ -81,7 +81,7 @@ export default async (sock, m, plugins, store) => {
                 console.error(e);
                 m.report(e);
             }
-        } else if ((cmd.noPrefix || prefix) && [cmd.name, ...cmd.command].includes(command)) {
+        } else if ((cmd.noPrefix || prefix) && cmd.command.includes(command)) {
             if (cmd.owner && !m.isOwner) return m.reply(global.status.owner);
             if (cmd.private && m.isGroup) return m.reply(global.status.private);
             if (cmd.group && !m.isGroup) return m.reply(global.status.group);
