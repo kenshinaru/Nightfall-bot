@@ -117,96 +117,62 @@ class Func {
     }
   }
   
-  fetchBuffer = async (string, options = {}) => {
+  fetchBuffer = async (source, filename, options = {}) => {
     try {
-      if (/^https?:\/\//i.test(string)) {
-        const data = await axios.get(string, {
-          headers: { ...(options.headers || {}) },
-          responseType: "arraybuffer",
-          ...options,
-        });
-        const buffer = data?.data;
-        const name = /filename/i.test(data.headers?.["content-disposition"])
-          ? data.headers["content-disposition"]
-              ?.match(/filename=(.*)/)?.[1]
-              ?.replace(/["';]/g, "")
-          : "";
-        const mime =
-          mimes.lookup(name) ||
-          data.headers["content-type"] ||
-          (await fromBuffer(buffer))?.mime;
-        return {
-          data: buffer,
-          size: Buffer.byteLength(buffer),
-          sizeH: this.formatSize(Buffer.byteLength(buffer)),
-          name,
-          mime,
-          ext: mimes.extension(mime),
-        };
-      } else if (/^data:.*?\/.*?;base64,/i.test(string)) {
-        const data = Buffer.from(string.split(",")[1], "base64");
-        const size = Buffer.byteLength(data);
-        return {
-          data,
-          size,
-          sizeH: this.formatSize(size),
-          ...((await fromBuffer(data)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-          }),
-        };
-      } else if (fs.existsSync(string) && fs.statSync(string).isFile()) {
-        const data = fs.readFileSync(string);
-        const size = Buffer.byteLength(data);
-        return {
-          data,
-          size,
-          sizeH: this.formatSize(size),
-          ...((await fromBuffer(data)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-          }),
-        };
-      } else if (Buffer.isBuffer(string)) {
-        const size = Buffer.byteLength(string) || 0;
-        return {
-          data: string,
-          size,
-          sizeH: this.formatSize(size),
-          ...((await fromBuffer(string)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-          }),
-        };
-      } else if (/^[a-zA-Z0-9+/]{1,}={0,2}$/i.test(string)) {
-        const data = Buffer.from(string, "base64");
-        const size = Buffer.byteLength(data);
-        return {
-          data,
-          size,
-          sizeH: this.formatSize(size),
-          ...((await fromBuffer(data)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-          }),
-        };
-      } else {
-        const buffer = Buffer.alloc(20);
-        const size = Buffer.byteLength(buffer);
-        return {
-          data: buffer,
-          size,
-          sizeH: this.formatSize(size),
-          ...((await fromBuffer(buffer)) || {
-            mime: "application/octet-stream",
-            ext: "bin",
-          }),
-        };
-      }
+        if (Buffer.isBuffer(source)) {
+            let meta = await fromBuffer(source).catch(() => ({}));
+            return {
+                status: true,
+                data: source,
+                size: Buffer.byteLength(source),
+                filename: filename || `buffer.${meta.ext || "bin"}`,
+                mime: meta.mime || mimes.lookup(filename) || "application/octet-stream",
+                ext: meta.ext || mimes.extension(mimes.lookup(filename)) || "bin",
+            };
+        }
+
+        if (fs.existsSync(source) && fs.statSync(source).isFile()) {
+            return {
+                status: true,
+                data: fs.readFileSync(source),
+                size: fs.statSync(source).size,
+                filename: filename || path.basename(source),
+                mime: mimes.lookup(source) || "application/octet-stream",
+                ext: path.extname(source).slice(1) || mimes.extension(mimes.lookup(source)) || "bin",
+            };
+        }
+
+        if (/^https?:\/\//i.test(source)) {
+            let res = await axios.get(source, { headers: options.headers, responseType: "arraybuffer" });
+            let name = filename || res.headers["content-disposition"]?.match(/filename="?([^";]*)"?/)?.[1]?.replace(/["';]/g, "") || path.basename(new URL(source).pathname);
+            return {
+                status: true,
+                data: res.data,
+                size: Buffer.byteLength(res.data),
+                filename: name,
+                mime: mimes.lookup(name) || res.headers["content-type"],
+                ext: path.extname(name).slice(1) || mimes.extension(mimes.lookup(name)) || "bin",
+            };
+        }
+
+        if (/^data:.*?\/.*?;base64,/i.test(source) || /^[a-zA-Z0-9+/]+={0,2}$/i.test(source)) {
+            let data = Buffer.from(source.split(",").pop(), "base64");
+            let meta = await fromBuffer(data).catch(() => ({}));
+            return {
+                status: true,
+                data,
+                size: Buffer.byteLength(data),
+                filename: filename || `base64.${meta.ext || "bin"}`,
+                mime: meta.mime || "application/octet-stream",
+                ext: meta.ext || "bin",
+            };
+        }
     } catch (e) {
-      throw new Error(e?.message || e);
+        return { status: false, msg: e.message };
     }
-  };
+
+    return { status: false, msg: "" };
+}
 
   getFile = async (PATH) => {
     try {
