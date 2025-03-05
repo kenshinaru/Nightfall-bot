@@ -40,134 +40,95 @@ export default async (sock, m, plugins, store) => {
          users.afkReason = ''
       }
       
-      Logs(sock, m, isCmd)
+      await (await import(`../utils/logger.js?update=${Date.now()}`)).default(store, m, isCmd);
       
-      if (setting.self && !m.isOwner) return
-      for (const name in plugins) {
-         const cmd = plugins[name];
-    
+        if (setting.self && !m.isOwner) return
+    Object.entries(plugins).forEach(([name, cmd]) => {
         if (!cmd.command && cmd.run) {
-        if (cmd.owner && !m.isOwner) {
-            m.reply(global.status.owner);
-            continue;
-        }
-        if (cmd.private && m.isGroup) {
-            m.reply(global.status.private);
-            continue;
-        }
-        if (cmd.group && !m.isGroup) {
-            m.reply(global.status.group);
-            continue;
-        }
-        if (cmd.admin && !m.isAdmin) {
-            m.reply(global.status.admin);
-            continue;
-        }
-        if (cmd.botAdmin && !m.isBotAdmin) {
-            m.reply(global.status.botAdmin);
-            continue;
-        }
-        if (cmd.limit && users.limit < 1) {
-    sock.reply(m.chat, `Limit pemakaian kamu sudah habis.
+            if (cmd.owner && !m.isOwner) return
+            if (cmd.private && m.isGroup) return
+            if (cmd.group && !m.isGroup) return
+            if (cmd.admin && !m.isAdmin) return 
+            if (cmd.botAdmin && !m.isBotAdmin) return
+            if (cmd.limit) {
+                if (users.limit < 1) {
+                    return;
+                }
+                const limit = cmd.limit === true ? 1 : cmd.limit;
+                if (users.limit >= limit) {
+                    users.limit -= limit;
+                } else {
+                    return;
+                }
+            }
+
+            try {
+                cmd.run(m, {
+                    sock,
+                    q: m.isQuoted ? m.quoted : m,
+                    plugins,
+                    command,
+                    setting,
+                    scrap,
+                    users,
+                    func,
+                    store,
+                    args,
+                    set,
+                    text,
+                });
+            } catch (e) {
+                console.error(e);
+                m.report(e);
+            }
+        } else if ((cmd.noPrefix || prefix) && [cmd.name, ...cmd.command].includes(command)) {
+            if (cmd.owner && !m.isOwner) return m.reply(global.status.owner);
+            if (cmd.private && m.isGroup) return m.reply(global.status.private);
+            if (cmd.group && !m.isGroup) return m.reply(global.status.group);
+            if (cmd.admin && !m.isAdmin) return m.reply(global.status.admin);
+            if (cmd.botAdmin && !m.isBotAdmin) return m.reply(global.status.botAdmin);
+            if (cmd.limit) {
+                if (users.limit < 1) {
+                    sock.reply(m.chat, `Limit pemakaian kamu sudah habis.
 Limit pemakaian akan reset setiap jam 00:00 WIB
 
-Jika kamu ingin mendapat limit pemakaian unlimited, silakan ketik .premium.`, m)
-           continue
-         }
-
-        if (cmd.limit && users.limit > 0) {
-    const limit = cmd.limit.constructor.name == 'Boolean' ? 1 : cmd.limit
-        if (users.limit >= limit) {
-        users.limit -= limit
+Jika kamu ingin mendapat limit pemakaian unlimited, silakan ketik .premium.`, m);
+                    return;
+                }
+                const limit = cmd.limit === true ? 1 : cmd.limit;
+                if (users.limit >= limit) {
+                    users.limit -= limit;
                 } else {
-        sock.reply(m.chat, func.texted('bold', `⚠️ Your limit is not enough to use this feature.`), m)
-        continue
-           }
-        }
-       try {
-          cmd.run(m, {
-            sock,
-            q: m.isQuoted ? m.quoted : m,
-            plugins,
-            command,
-            setting,
-            scrap,
-            users,
-            func,
-            store,
-            args,
-            set,
-            setting,
-            text,
-            })
-          } catch (e) {
-          console.error(e)
-          m.report(e)
-          }
-     } else if ((cmd.noPrefix || prefix) && [...new Set([cmd.name].flat().concat(cmd.command))].includes(command)) {
-       if (cmd.owner && !m.isOwner) {
-            m.reply(global.status.owner);
-            continue;
-        }
-        if (cmd.private && m.isGroup) {
-            m.reply(global.status.private);
-            continue;
-        }
-        if (cmd.group && !m.isGroup) {
-            m.reply(global.status.group);
-            continue;
-        }
-        if (cmd.admin && !m.isAdmin) {
-            m.reply(global.status.admin);
-            continue;
-        }
-        if (cmd.botAdmin && !m.isBotAdmin) {
-            m.reply(global.status.botAdmin);
-            continue;
-        }
-        if (cmd.limit && users.limit < 1) {
-    sock.reply(m.chat, `Limit pemakaian kamu sudah habis.
-Limit pemakaian akan reset setiap jam 00:00 WIB
+                    sock.reply(m.chat, func.texted('bold', `⚠️ Your limit is not enough to use this feature.`), m);
+                    return;
+                }
+            }
 
-Jika kamu ingin mendapat limit pemakaian unlimited, silakan ketik .premium.`, m)
-           continue
-         }
+            if (cmd.wait) m.react('🕒');
 
-        if (cmd.limit && users.limit > 0) {
-    const limit = cmd.limit.constructor.name == 'Boolean' ? 1 : cmd.limit
-        if (users.limit >= limit) {
-        users.limit -= limit
-                } else {
-        sock.reply(m.chat, func.texted('bold', `⚠️ Your limit is not enough to use this feature.`), m)
-        continue
-           }
+            try {
+                cmd.run(m, {
+                    sock,
+                    q: m.isQuoted ? m.quoted : m,
+                    plugins,
+                    command,
+                    setting,
+                    scrap,
+                    users,
+                    prefix,
+                    func,
+                    store,
+                    args,
+                    set,
+                    text,
+                });
+            } catch (e) {
+                console.error(e);
+                m.report(e);
+            }
         }
-       if (cmd.wait) m.react('🕒')
-       
-       try {
-          cmd.run(m, {
-            sock,
-            q: m.isQuoted ? m.quoted : m,
-            plugins,
-            command,
-            setting,
-            scrap,
-            users,
-            prefix,
-            func,
-            store,
-            args,
-            set,
-            setting,
-            text,
-            })
-          } catch (e) {
-          console.error(e)
-          m.report(e)
-          }
-        }
-      }
-    } catch (e) {
-        console.error(e)
-    }
+    });
+} catch (e) {
+    console.error(e);
+   }
 }
