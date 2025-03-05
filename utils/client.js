@@ -2,6 +2,7 @@ import { toBuffer, makeWASocket, jidDecode, downloadContentFromMessage, generate
 import Exif from './exif.js'
 import func from './functions.js'
 import { fileTypeFromBuffer } from 'file-type'
+import { Readable } from 'stream'
 
 export function WAConnection(...args) {
 	let sock = makeWASocket(...args);
@@ -111,7 +112,7 @@ export function WAConnection(...args) {
   return s;
 };
 	
-    sock.parseMentions = (text) => {
+ sock.parseMentions = (text) => {
          if (typeof text === "string") {
 	const matches = text.match(/@([0-9]{5,16}|0)/g) || [];
 	   return matches.map((match) => match.replace("@", "") + "@s.whatsapp.net");
@@ -119,49 +120,28 @@ export function WAConnection(...args) {
      }
     
   sock.sendFile = async (jid, url, H, I, Q, options = {}) => {
-    let { mime, data: buffer, ext, size } = await func.getFile(url);
-    let data = {};
+    let { mime, filename, data, size } = await func.getFile(url);
+    let fileName = H || filename;
     let mimetype = /audio/i.test(mime) ? "audio/mpeg" : mime;
+    let stream = { stream: Readable.from(data) };
+
+    let dataObj = { fileName, caption: I || '' };
 
     if (size > 45000000 || options.document) {
-        data = {
-            document: buffer,
-            mimetype: mime,
-            fileName: H || `${sock.user?.name} (${new Date()}).${ext}`,
-            caption: I ? I : ''
-        };
+        dataObj = { ...dataObj, document: stream, mimetype };
     } else if (/image/.test(mime)) {
-        data = {
-            image: buffer,
-            mimetype: options?.mimetype || "image/png",
-            fileName: H || `${sock.user?.name} (${new Date()}).${ext}`,
-            caption: I ? I : ''
-        };
+        dataObj = { ...dataObj, image: stream, mimetype: options.mimetype || "image/png" };
     } else if (/video/.test(mime)) {
-        data = {
-            video: buffer,
-            mimetype: options?.mimetype || "video/mp4",
-            fileName: H || `${sock.user?.name} (${new Date()}).${ext}`,
-            caption: I ? I : ''
-        };
+        dataObj = { ...dataObj, video: stream, mimetype: options.mimetype || "video/mp4" };
     } else if (/audio/.test(mime)) {
-        data = {
-            audio: buffer,
-            mimetype: options?.mimetype || "audio/mpeg",
-            fileName: H || `${sock.user?.name} (${new Date()}).${ext}`,
-        };
+        dataObj = { ...dataObj, audio: stream, mimetype: options.mimetype || "audio/mpeg" };
     } else {
-        data = {
-            document: buffer,
-            mimetype: mime,
-            fileName: H || `${sock.user?.name} (${new Date()}).${ext}`,
-            caption: I ? I : ''
-        };
+        dataObj = { ...dataObj, document: stream, mimetype };
     }
 
-    return sock.sendMessage(jid, data, {
-        'quoted': Q,
-        'ephemeralExpiration': process?.env?.E_MSG || 0
+    return sock.sendMessage(jid, dataObj, {
+        quoted: Q,
+        ephemeralExpiration: process?.env?.E_MSG || 0
     });
 };
 
