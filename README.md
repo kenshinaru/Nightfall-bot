@@ -2,8 +2,8 @@
 <p align="center">
 <a href="https://github.com/kenshinaru"><img title="Author" src="https://img.shields.io/badge/Creator-Luthfi Joestars-red.svg?style=for-the-badge&logo=github"></a>
 </p>
-### Instalasi
 
+> [!TIP]
 ```js
 $ git clone https://github.com/kenshinaru/Nightfall-bot.git
 $ cd Nightfall-bot
