@@ -55,11 +55,11 @@ case 'hi': {
  break
 ```
 
-### Catatan
-- Tersedia fitur untuk menambahkan case dan plugins secara otomatis.
-- Pastikan semua plugin diekspor dalam format ESM (export default).
-- Script ini akan dikembangkan terus.
-- Terima kasih kepada creator-creator scraper yang suka berbagi di channel 🫡.
+> [!NOTE]
+> Tersedia fitur untuk menambahkan case dan plugins secara otomatis.
+> Pastikan semua plugin diekspor dalam format ESM (export default).
+> Script ini akan dikembangkan terus.
+> Terima kasih kepada creator-creator scraper yang suka berbagi di channel 🫡.
 
 ### 📡 Information 
 [![WhatsApp Group](https://img.shields.io/badge/WhatsApp%20Group-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/IAeLNlXD1Y1BogudzDlGiV)
