@@ -4,6 +4,7 @@
 </p>
 
 > [!TIP]
+> This how to run the script.
 ```js
 $ git clone https://github.com/kenshinaru/Nightfall-bot.git
 $ cd Nightfall-bot
