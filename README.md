@@ -61,11 +61,12 @@ case 'hi': {
 > Script ini akan dikembangkan terus.
 > Terima kasih kepada creator-creator scraper yang suka berbagi di channel 🫡.
 
-> [!INFO]
+> [!TIPS]
 [![WhatsApp Group](https://img.shields.io/badge/WhatsApp%20Group-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://chat.whatsapp.com/IAeLNlXD1Y1BogudzDlGiV)
 [![WhatsApp channel](https://img.shields.io/badge/WhatsApp%20Channel-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://whatsapp.com/channel/0029VaXH9kE0G0XZqZFYKo0K)
 
 ### Donate
  <a href="https://saweria.co/donate/kenshinn"><img alt="Saweria" src="https://img.shields.io/badge/Saweria-F16061?style=for-the-badge&logo=ko-fi&logoColor=white" /></a>
 
-Made with ❤️ by Luthfi Joestars
+> [!WARNING]
+> This Script Made with ❤️ by Luthfi Joestars, Forbidden to sell this original script
